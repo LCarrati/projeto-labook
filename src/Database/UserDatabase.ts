@@ -16,4 +16,12 @@ export class UserDatabase extends BaseDatabase {
 
         return user
     }
+
+    public async findUserByEmail(email: string) {
+        const [user] = await BaseDatabase
+            .connection(UserDatabase.TABELA_USUARIOS)
+            .where({ email })
+
+        return user
+    }
 }

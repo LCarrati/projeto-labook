@@ -3,28 +3,22 @@ import { ROLES } from "../Models/UserModel"
 
 // esses são para o PUT
 export interface CreateUserInputDTO {
-    id: string,
+    // id: string,
     name: string,
     email: string,
     password: string,
-    role: ROLES
+    role?: ROLES
 }
 
 export interface CreateUserOutputDTO {
     message: string,
-    product : {
-        id: string,
-        name: string,
-        email: string,
-        password: string,
-        role: ROLES
-    }
+    token: string
 }
 
 export const createUserSchema = z.object({
-    id: z.string(),
+    // id: z.string(),
     name: z.string().min(3),
     email: z.string().email(),
     password: z.string().min(3),
-    role: z.nativeEnum(ROLES)
+    role: z.nativeEnum(ROLES).optional()
 }).transform(data => data as CreateUserInputDTO)
