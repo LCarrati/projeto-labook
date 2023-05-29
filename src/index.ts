@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 
 import userRouter from './Router/userRouter'
 import postRouter from './Router/postRouter'
+import likeDislikeRouter from './Router/likeDislike'
 
 const app = express()
 dotenv.config()
@@ -17,4 +18,4 @@ app.listen(Number(process.env.PORT || 3003), () => {
 
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
-// app.use("/likes", likeDisRouter);
+app.use("/likes", likeDislikeRouter);

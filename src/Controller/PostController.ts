@@ -67,4 +67,34 @@ export class PostController {
 			}
 		}
 	}
+
+	public getPosts = async (req: Request, res: Response): Promise<void> => {
+		try {
+			const { id, creatorId } = req.body
+
+			if (id) {
+				//get post by id
+				const output = await this.postBusiness.getPostById(id)
+				res.status(201).send(output);
+			} else if (creatorId) {
+				//get posts by creatorId
+				const output = await this.postBusiness.getPostByCreator(creatorId)
+				res.status(201).send(output);
+			} else {
+				//get all posts
+				const output = await this.postBusiness.getAllPosts()
+				res.status(201).send(output);
+			}
+			
+		} catch (error) {
+			console.log(error);
+			if (error instanceof ZodError) {
+				res.status(400).send(error.issues[0].message);
+			} else if (error instanceof BaseError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(500).send("Erro inesperado");
+			}
+		}
+	}
 }

@@ -79,4 +79,48 @@ export class PostBusiness {
 
         return output
     }
+
+    public getPostById = async (id: string) => {
+        const post = await this.postDatabase.findPostById(id);
+
+        if (!post) {
+            throw new NotFoundError
+        }
+
+        const output = {
+            message: "Post encontrado com sucesso",
+            post
+        }
+
+        return output
+    }
+
+    public getPostByCreator = async (creatorId: string) => {
+        const post = await this.postDatabase.findPostByCreatorId(creatorId);
+
+        if (!post) {
+            throw new NotFoundError
+        }
+
+        const output = {
+            message: "Post encontrado com sucesso",
+            post
+        }
+
+        return output
+    }
+
+    public getAllPosts = async () => {
+        const posts = await this.postDatabase.findAllPosts()
+        if (!posts) {
+            throw new NotFoundError
+        }
+
+        const output = {
+            message: "Post encontrado com sucesso",
+            posts
+        }
+
+        return output
+    }
 }

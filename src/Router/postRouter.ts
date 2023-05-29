@@ -18,7 +18,6 @@ const postController = new PostController(
 postRouter.post("/createpost", postController.createPost)
 postRouter.delete("/deletepost", postController.deletePost)
 postRouter.put("/editepost", postController.editPost)
-
-// get posts
+postRouter.get("/getPosts", postController.getPosts)
 
 export default postRouter

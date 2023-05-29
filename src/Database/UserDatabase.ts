@@ -9,7 +9,7 @@ export class UserDatabase extends BaseDatabase {
         await UserDatabase.connection(UserDatabase.TABELA_USUARIOS).insert(newUser)
     }
 
-    public async findUserById(id: string, email: string) {
+    public async findUserById(id?: string, email?: string) {
         const [user] = await BaseDatabase
             .connection(UserDatabase.TABELA_USUARIOS)
             .where({ id }).orWhere({ email })
