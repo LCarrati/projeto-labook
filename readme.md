@@ -24,25 +24,26 @@ https://dbdiagram.io/d/63d16443296d97641d7c1ae1
 
 # Lista de requisitos
 - Documentação Postman de todos os endpoints (obrigatória para correção)
+- Link da documentação: https://documenter.getpostman.com/view/24823216/2s93sXcEhw
 
 - Endpoints
-    - [ ]  signup
-    - [ ]  login
-    - [ ]  get posts
-    - [ ]  create post
-    - [ ]  edit post
-    - [ ]  delete post
-    - [ ]  like / dislike post
+    - [x]  signup
+    - [x]  login
+    - [x]  get posts
+    - [x]  create post
+    - [x]  edit post
+    - [x]  delete post
+    - [x]  like / dislike post
 
 - Autenticação e autorização
-    - [ ]  identificação UUID
-    - [ ]  senhas hasheadas com Bcrypt
-    - [ ]  tokens JWT
+    - [x]  identificação UUID
+    - [x]  senhas hasheadas com Bcrypt
+    - [x]  tokens JWT
  
  - Código
-    - [ ]  POO
-    - [ ]  Arquitetura em camadas
-    - [ ]  Roteadores no Express
+    - [x]  POO
+    - [x]  Arquitetura em camadas
+    - [x]  Roteadores no Express
 
 - README.md
 
