@@ -40,6 +40,12 @@ export class LikesDatabase extends BaseDatabase {
         .where({ post_id }).andWhere({ user_id })
         .update({ like })
     }
+
+    public async remove(post_id: string, user_id: string) {
+        await BaseDatabase
+        .connection(LikesDatabase.TABELA_LIKES)
+        .delete().where({ post_id }).andWhere({ user_id })
+    }
     // public async removeDislike(postId:string, userId:string) {
     
     // }

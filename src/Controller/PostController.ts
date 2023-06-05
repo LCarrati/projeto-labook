@@ -10,15 +10,14 @@ export class PostController {
 	public createPost = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const input = createPostSchema.parse({
-				creatorId: req.body.creatorId,
-				content: req.body.content,
+				creator_Id: req.body.creator_Id,
+				content: req.body.content
 			});
 
 			const output = await this.postBusiness.createPost(input);
 
-			res.status(201).send(output);
+			res.status(200).send(output);
 		} catch (error) {
-			console.log(error);
 			if (error instanceof ZodError) {
 				res.status(400).send(error.issues[0].message);
 			} else if (error instanceof BaseError) {
@@ -37,7 +36,6 @@ export class PostController {
 
 			res.status(201).send(output);
 		} catch (error) {
-			console.log(error);
 			if (error instanceof ZodError) {
 				res.status(400).send(error.issues[0].message);
 			} else if (error instanceof BaseError) {
@@ -57,7 +55,6 @@ export class PostController {
 			res.status(201).send(output);
 			
 		} catch (error) {
-			console.log(error);
 			if (error instanceof ZodError) {
 				res.status(400).send(error.issues[0].message);
 			} else if (error instanceof BaseError) {
@@ -87,7 +84,6 @@ export class PostController {
 			}
 			
 		} catch (error) {
-			console.log(error);
 			if (error instanceof ZodError) {
 				res.status(400).send(error.issues[0].message);
 			} else if (error instanceof BaseError) {

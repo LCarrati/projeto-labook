@@ -6,13 +6,12 @@ import { LikesBusiness } from "../Business/LikesBusiness";
 export class LikesController {
     constructor(private likesBusiness: LikesBusiness) { }
 
-    public likedislike = async (req: Request, res: Response): Promise<void> => {
+    public likedislike = async (req: Request, res: Response) => {
         try {
             const { postId, userId, likedislike } = req.body
             const output = await this.likesBusiness.likeDislike(postId, userId, likedislike);
-            return output
+            res.status(200).send(output);
         } catch (error) {
-            console.log(error);
             if (error instanceof ZodError) {
                 res.status(400).send(error.issues[0].message);
             } else if (error instanceof BaseError) {

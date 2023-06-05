@@ -1,12 +1,14 @@
+import { BaseDatabase } from "../Database/BaseDatabase"
+
 export interface PostDB {
-    creatorId: string,
+    creator_Id: string,
     content: string
 }
 
 export class Post {
   constructor(
     private id: string,
-    private creatorId: string,
+    private creator_Id: string,
     private content: string,
     private likes: number = 0,
     private dislikes: number = 0
@@ -17,11 +19,11 @@ export class Post {
     }
 
     public getCreatorId() {
-        return this.creatorId
+        return this.creator_Id
     }
 
     public setCreatorId(creatorId: string): void {
-        this.creatorId = creatorId
+        this.creator_Id = creatorId
     }
 
     public getContent() {

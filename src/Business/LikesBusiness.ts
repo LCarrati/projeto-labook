@@ -26,18 +26,39 @@ export class LikesBusiness {
             like: number
         }
         const [interactionExists]: likeDislikeDB[] = await this.likesDatabase.findInteraction(postId, userId)
+
         // não teve interação
         if (!interactionExists) {
             // usuário deu like
             if (likeDislike === 1) {
                 await this.likesDatabase.addLike(postId, userId)
                 await this.postDatabase.addLike(postId)
+                const likesdislikes = await this.postDatabase.findPostById(postId)
+                const likesdislikeoutput = {
+                    likes: likesdislikes.likes,
+                    dislikes: likesdislikes.dislikes
+                }
+                const output = {
+                    message: "usuário deu like",
+                    likesdislikeoutput
+                }
+                return output
             }
     
             // usuário deu dislike
             if (likeDislike === 0) {
                 await this.likesDatabase.addDislike(postId, userId)
                 await this.postDatabase.addDislike(postId)
+                const likesdislikes = await this.postDatabase.findPostById(postId)
+                const likesdislikeoutput = {
+                    likes: likesdislikes.likes,
+                    dislikes: likesdislikes.dislikes
+                }
+                const output = {
+                    message: "usuário deu dislike",
+                    likesdislikeoutput
+                }
+                return output
             }
         }
 
@@ -46,27 +67,65 @@ export class LikesBusiness {
             const likeStatus: number = interactionExists?.like
             // usuário deu like mas já tinha dado like
             if (likeDislike === 1 && likeStatus === 1) {
-                // do nothing
+                await this.postDatabase.removeLike(postId)
+                await this.likesDatabase.remove(postId, userId)
+                const likesdislikes = await this.postDatabase.findPostById(postId)
+                const likesdislikeoutput = {
+                    likes: likesdislikes.likes,
+                    dislikes: likesdislikes.dislikes
+                }
+                const output = {
+                    message: "vc removeu seu like",
+                    likesdislikeoutput
+                }
+                return output
             }
             // usuário deu like mas já tinha dado dislike
             else if (likeDislike === 1 && likeStatus === 0) {
                 await this.likesDatabase.changeLike(postId, userId, likeDislike)
                 await this.postDatabase.addLike(postId)
                 await this.postDatabase.removeDislike(postId)
-                // await this.likesDatabase.addLike(postId, userId)
-                // await this.likesDatabase.removeDislike(postId, userId)
+                const likesdislikes = await this.postDatabase.findPostById(postId)
+                const likesdislikeoutput = {
+                    likes: likesdislikes.likes,
+                    dislikes: likesdislikes.dislikes
+                }
+                const output = {
+                    message: "vc trocou dislike por like",
+                    likesdislikeoutput
+                }
+                return output
             }
             // usuário deu dislike mas já tinha dado like
             else if (likeDislike === 0 && likeStatus === 1) {
                 await this.likesDatabase.changeLike(postId, userId, likeDislike)
                 await this.postDatabase.addDislike(postId)
                 await this.postDatabase.removeLike(postId)
-                // await this.likesDatabase.addDislike(postId, userId)
-                // await this.likesDatabase.removeLike(postId, userId)
+                const likesdislikes = await this.postDatabase.findPostById(postId)
+                const likesdislikeoutput = {
+                    likes: likesdislikes.likes,
+                    dislikes: likesdislikes.dislikes
+                }
+                const output = {
+                    message: "vc trocou like por dislike",
+                    likesdislikeoutput
+                }
+                return output
             } 
             // usuário deu dislike mas já tinha dado dislike
             else {
-                // do nothing
+                await this.postDatabase.removeDislike(postId)
+                await this.likesDatabase.remove(postId, userId)
+                const likesdislikes = await this.postDatabase.findPostById(postId)
+                const likesdislikeoutput = {
+                    likes: likesdislikes.likes,
+                    dislikes: likesdislikes.dislikes
+                }
+                const output = {
+                    message: "vc removeu seu dislike",
+                    likesdislikeoutput
+                }
+                return output
             }
         }
 

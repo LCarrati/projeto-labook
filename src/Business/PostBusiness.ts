@@ -19,7 +19,7 @@ export class PostBusiness {
     public createPost = async (
         input: CreatePostInputDTO
     ): Promise<CreatePostOutputDTO> => {
-        const { creatorId, content } = input;
+        const { creator_Id, content } = input;
         const id = this.idGenerator.generate();
 
         const postAlreadyExists = await this.postDatabase.findPostById(id);
@@ -27,17 +27,27 @@ export class PostBusiness {
             throw new AlreadyExistsError();
         }
 
-        const newPost = new Post(id, creatorId, content);
+        const newPost = new Post(id, creator_Id, content);
         const newPostDB = {
             id: newPost.getId(),
-            creatorId: newPost.getCreatorId(),
+            creator_Id: newPost.getCreatorId(),
             content: newPost.getContent(),
+            likes: newPost.getLikes(),
+            dislikes: newPost.getDislikes(),
         };
 
         await this.postDatabase.createPost(newPostDB);
+        const creatorName: any = await this.postDatabase.findCreatorName(newPostDB.id) 
+        const newPostWithUserName = {
+            ...newPostDB,
+            name: creatorName[0]?.name,
+            created_at: creatorName[0]?.created_at
+          };
 
-        const output: CreatePostOutputDTO = {
+        const output: any = {
+        // const output: CreatePostOutputDTO = {
             message: "Postagem criada com sucesso",
+            newPostWithUserName
         };
 
         return output;

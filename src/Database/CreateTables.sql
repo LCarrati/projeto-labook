@@ -1,4 +1,4 @@
--- Active: 1684850410388@@127.0.0.1@3306
+-- Active: 1685153403135@@127.0.0.1@3306
 CREATE TABLE users (
     id TEXT NOT NULL UNIQUE PRIMARY KEY,
     name TEXT NOT NULL,
@@ -8,12 +8,13 @@ CREATE TABLE users (
     created_at TEXT DEFAULT (DATETIME('now','localtime'))
 );
 
+drop table posts;
 CREATE TABLE posts (
     id TEXT NOT NULL UNIQUE PRIMARY KEY,
-    creator_id TEXT NOT NULL UNIQUE,
+    creator_id TEXT NOT NULL,
     content TEXT NOT NULL,
-    likes integer,
-    dislikes integer,
+    likes integer DEFAULT 0,
+    dislikes integer DEFAULT 0,
     created_at TEXT DEFAULT (DATETIME('now','localtime')),
     updated_at TEXT,
     FOREIGN KEY (creator_id) REFERENCES users(id)

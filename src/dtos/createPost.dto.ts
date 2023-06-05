@@ -1,8 +1,8 @@
 import z from "zod"
 
-// esses são para o PUT
+
 export interface CreatePostInputDTO {
-    creatorId: string,
+    creator_Id: string,
     content: string
 }
 
@@ -11,6 +11,6 @@ export interface CreatePostOutputDTO {
 }
 
 export const createPostSchema = z.object({
-    creatorId: z.string(),
+    creator_Id: z.string(),
     content: z.string().min(3)
 }).transform(data => data as CreatePostInputDTO)

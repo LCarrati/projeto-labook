@@ -9,19 +9,38 @@ export class UserDatabase extends BaseDatabase {
         await UserDatabase.connection(UserDatabase.TABELA_USUARIOS).insert(newUser)
     }
 
-    public async findUserById(id?: string, email?: string) {
+    public async findUserById(id: string) {
         const [user] = await BaseDatabase
             .connection(UserDatabase.TABELA_USUARIOS)
-            .where({ id }).orWhere({ email })
+            .where({ id })
 
         return user
     }
 
     public async findUserByEmail(email: string) {
+        // console.log("email a ser procurado é " + email)
         const [user] = await BaseDatabase
             .connection(UserDatabase.TABELA_USUARIOS)
             .where({ email })
 
         return user
+    }
+
+    public async findUserByName(q: string) {
+        // console.log("email a ser procurado é " + email)
+        console.log("cheguei nessa merda")
+        const [user] = await BaseDatabase
+            .connection(UserDatabase.TABELA_USUARIOS)
+            .where('name', '=', `${q}`)
+
+        console.log(user)
+        return user
+    }
+
+    public async getAllUsers() {
+        const userList = await BaseDatabase
+        .connection(UserDatabase.TABELA_USUARIOS)
+
+        return userList
     }
 }

@@ -2,7 +2,8 @@ import { UserDatabase } from "../Database/UserDatabase";
 import { AlreadyExistsError } from "../Errors/AlreadyExistsError";
 import { BadRequestError } from "../Errors/BadRequestError";
 import { NotFoundError } from "../Errors/NotFoundError";
-import { User } from "../Models/UserModel";
+import { USER_ROLES, User } from "../Models/UserModel";
+import { HashManager } from "../Services/HashManager";
 import { IdGenerator } from "../Services/IdGenerator";
 import { TokenManager, TokenPayload } from "../Services/TokenManager";
 import {
@@ -11,11 +12,13 @@ import {
 } from "../dtos/createUser.dto";
 import { LoginInputDTO, LoginOutputDTO } from "../dtos/loginUser.dto";
 
+
 export class UserBusiness {
   constructor(
     private userDatabase: UserDatabase,
     private idGenerator: IdGenerator,
-    private tokenManager: TokenManager
+    private tokenManager: TokenManager,
+    private hashManager: HashManager
   ) {}
 
   // regras para cadastrar um usuário
@@ -24,16 +27,22 @@ export class UserBusiness {
   ): Promise<CreateUserOutputDTO> => {
     //ver a tipagem desse input e da saída da função (output)
 
-    const { name, email, password, role } = input;
+    const { name, email, password } = input;
 
     const id = this.idGenerator.generate();
 
-    const userAlreadyExists = await this.userDatabase.findUserById(id, email);
-    if (userAlreadyExists) {
+    const userIdAlreadyExists = await this.userDatabase.findUserById(id);
+    if (userIdAlreadyExists) {
+      throw new AlreadyExistsError();
+    }
+    const userEmailAlreadyExists = await this.userDatabase.findUserByEmail(email);
+    if (userEmailAlreadyExists) {
       throw new AlreadyExistsError();
     }
 
-    const newUser = new User(id, name, email, password);
+    const hashedPassword = await this.hashManager.hash(password)
+
+    const newUser = new User(id, name, email, hashedPassword);
     const newUserDB = {
       id: newUser.getId(),
       name: newUser.getName(),
@@ -65,13 +74,14 @@ export class UserBusiness {
   // regras para logar um usuário
   public loginUser = async (input: LoginInputDTO): Promise<LoginOutputDTO> => {
     const { email, password } = input;
+    // console.log("email no userBusiness é " + email)
 
     const userExists = await this.userDatabase.findUserByEmail(email);
 
     if (!userExists) {
       throw new NotFoundError("'email' não encontrado");
     }
-
+    
     const user = new User(
       userExists.id,
       userExists.name,
@@ -80,9 +90,14 @@ export class UserBusiness {
       userExists.role
     );
 
-    if (password !== user.getPassword()) {
-      throw new BadRequestError("'password' incorreto");
-    }
+    const hashedPassword = user.getPassword()
+
+    const isPasswordCorrect = await this.hashManager.compare(password, hashedPassword)
+
+  if (!isPasswordCorrect) {
+    throw new BadRequestError("e-mail e/ou senha inválido(s)")
+  }
+
 
     const payload: TokenPayload = {
         id: user.getId(),
@@ -91,30 +106,51 @@ export class UserBusiness {
       }
   
       const token = this.tokenManager.createToken(payload)
+      
 
     const output: LoginOutputDTO = {
       message: "Login realizado com sucesso",
       token,
+      name: user.getName(),
+      role: payload.role
     };
 
     return output;
   };
 
-  // public findUser = async (q: string | undefined): Promise<User[]> => {
+  public getAllUsers = async (token: string) => {
 
-  //     const usersDB = await this.userDatabase.findUser(q)
+    const payload = this.tokenManager.getPayload(token)
 
-  //     const users: User[] = usersDB.map((userDB) => new User(
-  //         userDB.id,
-  //         userDB.name,
-  //         userDB.email,
-  //         userDB.password,
-  //         userDB.role
-  //     ))
+    if (payload === null) {
+      throw new BadRequestError("token inválido")
+    }
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new BadRequestError("somente admins podem acessar esse recurso")
+    }
 
-  //     return users
+    const userList = await this.userDatabase.getAllUsers()
 
-  // }
+    return userList
+  }
+
+  public findUserByName = async (q: string): Promise<User[]> => {
+
+      const usersDB = await this.userDatabase.findUserByName(q)
+
+      if (usersDB) {
+        // const users: User[] = usersDB.map((userDB: any) => new User(
+        //     userDB.id,
+        //     userDB.name,
+        //     userDB.email,
+        //     userDB.role,
+        //     userDB.created_at
+        // ))
+        return usersDB
+      } else {
+        throw new NotFoundError
+      }
+  }
 
   public editUsers = async () => {};
   public deleteUsers = async () => {};

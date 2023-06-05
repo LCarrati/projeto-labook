@@ -1,5 +1,5 @@
 import z from "zod"
-import { ROLES } from "../Models/UserModel"
+import { USER_ROLES } from "../Models/UserModel"
 
 // esses são para o PUT
 export interface CreateUserInputDTO {
@@ -7,7 +7,7 @@ export interface CreateUserInputDTO {
     name: string,
     email: string,
     password: string,
-    role?: ROLES
+    role?: USER_ROLES
 }
 
 export interface CreateUserOutputDTO {
@@ -20,5 +20,5 @@ export const createUserSchema = z.object({
     name: z.string().min(3),
     email: z.string().email(),
     password: z.string().min(3),
-    role: z.nativeEnum(ROLES).optional()
+    role: z.nativeEnum(USER_ROLES).optional()
 }).transform(data => data as CreateUserInputDTO)

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { ROLES } from "../Models/UserModel";
+import { USER_ROLES } from "../Models/UserModel";
 
 dotenv.config();
 
@@ -8,7 +8,7 @@ dotenv.config();
 export interface TokenPayload {
   id: string;
   name: string;
-  role: ROLES;
+  role: USER_ROLES;
 }
 
 export class TokenManager {

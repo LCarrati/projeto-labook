@@ -17,7 +17,7 @@ const postController = new PostController(
 
 postRouter.post("/createpost", postController.createPost)
 postRouter.delete("/deletepost", postController.deletePost)
-postRouter.put("/editepost", postController.editPost)
-postRouter.get("/getPosts", postController.getPosts)
+postRouter.put("/editpost", postController.editPost)
+postRouter.get("/getposts", postController.getPosts)
 
 export default postRouter
